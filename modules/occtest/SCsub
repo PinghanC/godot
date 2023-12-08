@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+
+Import("env")
+
+env_occtest = env.Clone()
+
+if env["platform"] == "web":
+    occ_include_path = "#thirdparty/occ770/wasm/inc"
+    occ_lib_path = "#thirdparty/occ770/wasm/lib"
+elif env["platform"] == "windows":
+    occ_include_path = "#thirdparty/occ770/mingw64/inc"
+    occ_lib_path = "#thirdparty/occ770/mingw64/win64/lib"
+
+env_occtest.Append(CPPPATH=[occ_include_path])
+env_occtest.Append(LIBPATH=[occ_lib_path])
+
+env_occtest.Append(LIBS=["TKernel", "TKMath"])  # 使用实际 OCC 库名
+
+env_occtest.add_source_files(env.modules_sources, "*.cpp")
