@@ -4,7 +4,7 @@
 
 Vector3 cgalAABB::getPoint() {
     
-	 auto box = m_inside_tree.bbox();
+	 m_inside_tree.build();
      return Vector3(0.1, 0.2, 0.3);
 
 }
