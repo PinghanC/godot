@@ -29,13 +29,13 @@
 /**************************************************************************/
 
 #include "register_types.h"
-
+#include "cgalAABB.h" 
 
 void initialize_cgaltest_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
-
+	GDREGISTER_CLASS(cgalAABB);
 }
 
 void uninitialize_cgaltest_module(ModuleInitializationLevel p_level) {
