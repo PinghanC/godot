@@ -33,7 +33,7 @@
 #include <unordered_set>
 
 // OpenMP
-#include <omp.h>
+//#include <omp.h>
 
 namespace dentist {
 
