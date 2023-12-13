@@ -10,3 +10,4 @@ env_cgaltest.Append(CPPPATH=["#thirdparty/eigen3"])
 env_cgaltest.Append(CPPPATH=["#thirdparty/boost"]) 
 
 env_cgaltest.add_source_files(env.modules_sources, "*.cpp")
+env_cgaltest.add_source_files(env.modules_sources, "teeth_operators/*.cpp")
