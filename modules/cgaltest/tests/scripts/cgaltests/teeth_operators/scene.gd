@@ -9,4 +9,5 @@ func test():
 	var scene_instance = Scene.new() #registered from cgal module
 	scene_instance.load_upper_teeth("modules/cgaltest/tests/data/134109188_shell_occlusion_u_cut_1.stl")
 	scene_instance.load_lower_teeth("modules/cgaltest/tests/data/134109188_shell_occlusion_l_cut_1.stl")
-
+	scene_instance.compute_laplacian_based_inside();
+	scene_instance.compute_laplacian_based_convexity();

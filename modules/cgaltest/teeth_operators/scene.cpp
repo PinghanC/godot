@@ -16,8 +16,19 @@
 // // OpenGL
 // #include <QOpenGLShader>
 void Scene::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("load_upper_teeth", "url"), &Scene::load_upper_teeth);
-	ClassDB::bind_method(D_METHOD("load_lower_teeth", "url"), &Scene::load_lower_teeth);
+	ClassDB::bind_method(D_METHOD("load_upper_teeth", "file_path"), &Scene::load_upper_teeth);
+	ClassDB::bind_method(D_METHOD("load_lower_teeth", "file_path"), &Scene::load_lower_teeth);
+	ClassDB::bind_method(D_METHOD("compute_laplacian_based_inside"), &Scene::compute_laplacian_based_inside);
+	ClassDB::bind_method(D_METHOD("compute_laplacian_based_convexity"), &Scene::compute_laplacian_based_convexity);
+	ClassDB::bind_method(D_METHOD("compute_selected_segmentation"), &Scene::compute_selected_segmentation);
+	ClassDB::bind_method(D_METHOD("update_convexity_function_isovalue"), &Scene::update_convexity_function_isovalue);
+	ClassDB::bind_method(D_METHOD("validate_selected_segmentation"), &Scene::validate_selected_segmentation);
+	ClassDB::bind_method(D_METHOD("clear_selected_points"), &Scene::clear_selected_points);
+	ClassDB::bind_method(D_METHOD("compute_geodesic_pad_outlines"), &Scene::compute_geodesic_pad_outlines);
+	ClassDB::bind_method(D_METHOD("recompute_geodesic_pad_outlines"), &Scene::recompute_geodesic_pad_outlines);
+	ClassDB::bind_method(D_METHOD("compute_tooth_split_planes"), &Scene::compute_tooth_split_planes);
+	ClassDB::bind_method(D_METHOD("compute_paired_wires"), &Scene::compute_paired_wires);
+	ClassDB::bind_method(D_METHOD("compute_wire_shapes"), &Scene::compute_wire_shapes);
 }
 
 Scene::Scene()
