@@ -60,6 +60,11 @@ tests/data/*.translation
 *.ox
 *.Plo
 *.so
+# Exceptions for occ770 directory and its subdirectories
+!thirdparty/occ770/**/*.a
+!thirdparty/occ770/**/*.lib
+!thirdparty/occ770/**/*.dll
+!thirdparty/occ770/**/*.o
 # Binutils tmp linker output of the form "stXXXXXX" where "X" is alphanumeric
 st[A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9]
 
