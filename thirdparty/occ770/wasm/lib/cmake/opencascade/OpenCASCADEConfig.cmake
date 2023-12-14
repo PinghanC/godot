@@ -44,7 +44,7 @@ set (OpenCASCADE_RESOURCE_DIR "${OpenCASCADE_INSTALL_PREFIX}/src")
 
 # The C and C++ flags added by OpenCASCADE to the cmake-configured flags.
 set (OpenCASCADE_C_FLAGS      "   -fexceptions -fPIC")
-set (OpenCASCADE_CXX_FLAGS    "-fno-exceptions -fexceptions -fPIC -Wall -Wextra -Wshorten-64-to-32")
+set (OpenCASCADE_CXX_FLAGS    "-fno-exceptions -pthread -fPIC -Wall -Wextra -Wshorten-64-to-32")
 set (OpenCASCADE_LINKER_FLAGS   "")
 
 # List of available OpenCASCADE modules.
