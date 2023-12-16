@@ -11,14 +11,12 @@ if env["platform"] == "web":
 elif env["platform"] == "windows":
     occ_include_path = "#thirdparty/occ770/mingw64/inc"
     occ_lib_path = "#thirdparty/occ770/mingw64/win64/vc14/lib"
-    occ_lib_path_mscv = "#thirdparty/occ770/mingw64/win64/vc14/lib/winsows.editor"
-    env.Append(LIBPATH=[occ_lib_path, occ_lib_path_mscv])
+    occ_lib_path_mscv = "#thirdparty/occ770/mingw64/win64/vc14/lib/windows.editor"
+    occ_lib_path_mscv_template = "#thirdparty/occ770/mingw64/win64/vc14/lib/windows.template"
+    env.Append(LIBPATH=[occ_lib_path, occ_lib_path_mscv, occ_lib_path_mscv_template])
 
 env_occtest.Append(CPPPATH=[occ_include_path])
 
-# if env.msvc:
-#     env_occtest.Append(LINKFLAGS=["TKernel.lib", "TKMath.lib", "TKTopAlgo.lib", "TKPrim.lib", "TKService.lib", "TKG3d.lib", "TKBRep.lib", "TKGeomAlgo.lib", "TKGeomBase.lib"])
-# else:
 env.Append(LIBS=["TKernel", "TKMath", "TKTopAlgo", "TKPrim", "TKService", "TKG3d", "TKBRep", "TKGeomAlgo", "TKGeomBase", "TKG2d", "TKMesh", "TKShHealing"])
 
 env_occtest.add_source_files(env.modules_sources, "*.cpp")
