@@ -1,8 +1,6 @@
-#ifndef SCENE_H_
-#define SCENE_H_
+#ifndef PROJECT_H_
+#define PROJECT_H_
 
-#include "core/object/ref_counted.h"
-#include "core/string/ustring.h"
 // std
 #include <fstream>
 #include <algorithm>
@@ -12,15 +10,13 @@
 #include <filesystem>
 #include <time.h>
 #include <chrono>
- 
 
-// CGAL 
 #include "types.h"
 #include "function.h"
 
 #undef min
 #undef max
-
+namespace dentist {
 struct MeshOptions
 {
 	// View
@@ -44,16 +40,14 @@ struct MeshOptions
     std::vector<bool> upper_flags = {true, true, true, true, true, true};
     std::vector<bool> lower_flags = {true, true, true, true, true, true}; 
 	// Pair distance
-	double  pair_distance = 1.;
+	double  pair_distance = 1.5;
 	double 	pair_width = 0.1;
+	double  pad_height = 0.2;
+	double  pad_wire_height = 0.25;
 };
 
-class Scene 
-: public RefCounted
+class Project
 {
-	GDCLASS(Scene, RefCounted);
-protected:
-	static void _bind_methods();
 public:	
 	typedef dentist::Point									Point;
 	typedef dentist::PointList							    PointList;
@@ -93,6 +87,7 @@ public:
 		ScenePairedWires,
 		ScenePairedWireShapes,
 		ScenePairedWireExtrudeShapes,
+		ScenePadShapes,
 		SceneObjectTypeCount
 	};
 
@@ -110,10 +105,11 @@ public:
 		FlagToothCut = (1 << 10),
 		FlagPairCut = (1 << 11),
 		FlagPairWire = (1 << 12),
+		FlagPadShape = (1 << 13),
 		// Can go up to (1 << 31)
 		FlagAll = 0xFFFFFFFF
 	};
-
+	
 private:
 
 	Function	m_func;
@@ -121,32 +117,13 @@ private:
 	Point       m_mouse_pos;
 	Vector      m_mouse_vec;
 	PointList   m_select_pos;
-
+public:
 	MeshOptions m_mesh_options;
-
-// #ifdef _WIN32 // 因为windows下面是用Ninja编译，这样方便直接运行。后期需要设置相对位置
-// 	const QString shader_path = "../../shader/";
-// 	const QString default_macro = "../../macro/default_macro.js";
-// #else
-// 	const QString shader_path = "../shader/";
-// 	const QString default_macro = "../macro/default_macro.js";
-// #endif
 	
 	bool m_view[SceneObjectTypeCount] = {};
 
 	const int teeth_count = 6;
 	const int pair_count = 5;
-
-	// OpenGL
-	bool 						gl_init;
-	bool						are_buffers_initialized;
-	// QOpenGLFunctions	 		*gl;
-	// QOpenGLBuffer 				buffers[247];
-    // QOpenGLVertexArrayObject 	vao[158];
-	// QOpenGLShaderProgram 		rendering_program;
-	// QOpenGLShaderProgram		rendering_program_text;
-	// QOpenGLShaderProgram		rendering_program_func;
-	// QOpenGLShaderProgram		rendering_program_facet;
 
 	DataList					upper_teeth_facets; 			// vao[0] buffers[0]
 	DataList					upper_teeth_normals;  			// vao[0] buffers[1]
@@ -183,100 +160,52 @@ private:
 
     std::vector<DataList>       upper_seg_attribus;             // vao[16-21] buffers[29-40]
     std::vector<DataList>       lower_seg_attribus;             // vao[22-27] buffers[41-52]
-    int                         seg_attribus_vao_index = 16;
-    int                         seg_attribus_buffer_index = 29;
-    std::vector<DataList>       upper_geodesic_attribus;        // vao[28-33] buffers[53-58]
-    std::vector<DataList>       lower_geodesic_attribus;        // vao[34-39] buffers[59-64]
-    int                         geodesic_vao_index = 28;
-    int                         geodesic_buffer_index = 53;
 
-    std::vector<DataList>       upper_pad_outlines_attribus;    // vao[40-45] buffers[65-76]
+	std::vector<DataList>       upper_geodesic_attribus;        // vao[28-33] buffers[53-58]
+    std::vector<DataList>       lower_geodesic_attribus;        // vao[34-39] buffers[59-64]
+
+	std::vector<DataList>       upper_pad_outlines_attribus;    // vao[40-45] buffers[65-76]
     std::vector<DataList>       lower_pad_outlines_attribus;    // vao[46-51] buffers[77-88]
-    int                         pad_outlines_vao_index = 40;
-    int                         pad_outlines_buffer_index = 65;
 
 	std::vector<DataList>		upper_tooth_bounds_attribus;				// vao[52-57] buffers[89-94]
 	std::vector<DataList>		lower_tooth_bounds_attribus;				// vao[58-63] buffers[95-100]
-	int                         tooth_bounds_vao_index = 52;
-    int                         tooth_bounds_buffer_index = 89;
+
 	std::vector<DataList>		upper_tooth_cut_points_attribus;			// vao[64-69] buffers[101-106]
 	std::vector<DataList>		lower_tooth_cut_points_attribus;			// vao[70-75] buffers[107-112]
-	int                         tooth_cut_points_vao_index = 64;
-    int                         tooth_cut_points_buffer_index = 101;
+
 	std::vector<DataList>		upper_tooth_cut_planes_attribus;			// vao[76-81] buffers[113-124]
 	std::vector<DataList>		lower_tooth_cut_planes_attribus;			// vao[82-87] buffers[125-136]
-	int                         tooth_cut_planes_vao_index = 76;
-    int                         tooth_cut_planes_buffer_index = 113;
 
 	std::vector<DataList>		upper_pair_fitting_planes_attribus;			// vao[88-92] buffers[137-146]
 	std::vector<DataList>		lower_pair_fitting_planes_attribus;			// vao[93-97] buffers[147-156]
-	int                         pair_fitting_planes_vao_index = 88;
-    int                         pair_fitting_planes_buffer_index = 137;
+
 	std::vector<DataList>		upper_pair_fitting_lines_attribus;			// vao[98-102] buffers[157-161]
 	std::vector<DataList>		lower_pair_fitting_lines_attribus;			// vao[103-107] buffers[162-166]
-	int                         pair_fitting_lines_vao_index = 98;
-    int                         pair_fitting_lines_buffer_index = 157;
+
 	std::vector<DataList>		upper_pair_fitting_points_attribus;			// vao[108-112] buffers[167-171]
 	std::vector<DataList>		lower_pair_fitting_points_attribus;			// vao[113-117] buffers[172-176]
-	int                         pair_fitting_points_vao_index = 108;
-    int                         pair_fitting_points_buffer_index = 167;
+
 	std::vector<DataList>		upper_pair_cut_planes_attribus;				// vao[118-122] buffers[177-186]
 	std::vector<DataList>		lower_pair_cut_planes_attribus;				// vao[123-127] buffers[187-196]
-	int                         pair_cut_planes_vao_index = 118;
-    int                         pair_cut_planes_buffer_index = 177;
+
 	std::vector<DataList>		upper_pair_wires_attribus;					// vao[128-132] buffers[197-201]
 	std::vector<DataList>		lower_pair_wires_attribus;					// vao[133-137] buffers[202-206]
-	int                         pair_wires_vao_index = 128;
-    int                         pair_wires_buffer_index = 197;
 
 	std::vector<DataList>		upper_wire_shapes_attribus;					// vao[138-142] buffers[207-216]
 	std::vector<DataList>		lower_wire_shapes_attribus;					// vao[143-147] buffers[217-226]
-	int                         wire_shapes_vao_index = 138;
-    int                         wire_shapes_buffer_index = 207;
+
 	std::vector<DataList>		upper_wire_extrude_shapes_attribus;			// vao[148-152] buffers[227-236]
 	std::vector<DataList>		lower_wire_extrude_shapes_attribus;			// vao[153-157] buffers[237-246]
-	int                         wire_extrude_shapes_vao_index = 148;
-    int                         wire_extrude_shapes_buffer_index = 227;
-	
-	// Shader Elements for Surface Text
-	int 						mvpLocation_text;
-	int							mvLocation_text;
-	int 						lightLocation_text[5];
-    int 						colorLocation_text;
-	int 						poly_vertexLocation_text;
-	int 						normalsLocation_text;
-	int							colorLineLocation_text;
-	int							widthLineLocation_text;
-	int							vpLocation_text;
-	int							flagEdgeLocation_text;
-	// Shader Elements for Points / Vectors
-	int 						points_vertexLocation;
-    int 						mvpLocation;
-    int 						colorLocation;
-	// Shader Elements for Colored Funcs
-	int							points_vertexLocation_func;
-	int							mvpLocation_func;
-	int							colorLocation_func;
-	// Shader Elements for Colored Facets
-	int 						mvpLocation_facet;
-	int							mvLocation_facet;
-	int 						lightLocation_facet[5];
-	int 						colorLocation_facet;
-	int 						poly_vertexLocation_facet;
-	int 						normalsLocation_facet;
-	int							colorLineLocation_facet;
-	int							widthLineLocation_facet;
-	int							vpLocation_facet;
-	int							flagEdgeLocation_facet;
 
-public:
+	std::vector<DataList>		upper_pad_shapes_attribus;					// vao[158-163] buffers[247-258]
+	std::vector<DataList>		lower_pad_shapes_attribus;					// vao[164-169] buffers[259-270]
 
-	Scene();
-	~Scene();
+	Project();
+	~Project();
 
 	/******************* I/O **********************/
-	void load_upper_teeth(const String &filename);
-	void load_lower_teeth(const String &filename);
+	bool load_upper_teeth(const std::string& filename);
+	bool load_lower_teeth(const std::string& filename);
 	void get_bounding_shape(double& x, double& y, double& z, double& r);
 
 	/******************* OpenGL **********************/
@@ -300,20 +229,21 @@ public:
 	void compute_tooth_split_planes();
 	void compute_paired_wires();
 	void compute_wire_shapes();
+	void compute_pad_shapes();
 
 	/******************* Visualization **********************/
-	// // Teeth mesh
-	// void toggle_view(SceneObjectType type);
+	// Teeth mesh
+	void toggle_view(SceneObjectType type);
 
-	// void render(CGAL::QGLViewer*);
-	// void render_program_point(QOpenGLVertexArrayObject& vao, bool visible, const DataList data, QColor color);
-    // void render_program_line(QOpenGLVertexArrayObject& vao, bool visible, const DataList data, QColor color);
-	// void render_program_mesh(QOpenGLVertexArrayObject& vao, bool visible, const DataList data, QColor color, QColor line_color);
-	// void render_program_function(QOpenGLVertexArrayObject& vao, bool visible, const DataList data, QColor line_color);
+	//void render(CGAL::QGLViewer*);
+	//void render_program_point(QOpenGLVertexArrayObject& vao, bool visible, const DataList data, QColor color);
+ //   void render_program_line(QOpenGLVertexArrayObject& vao, bool visible, const DataList data, QColor color);
+	//void render_program_mesh(QOpenGLVertexArrayObject& vao, bool visible, const DataList data, QColor color, QColor line_color);
+	//void render_program_function(QOpenGLVertexArrayObject& vao, bool visible, const DataList data, QColor line_color);
 
 	/******************* Update **********************/
 	void set_mouse_pos(double x, double y, double z, double vx, double vy, double vz);
-	void update_mouse_selection();
+	bool update_mouse_selection();
 
 	/******************* Clear **********************/
 	void clear_data();
@@ -342,6 +272,8 @@ public:
 
 	void setPair_distance(double d);
 	void setPair_width(double d);
+	void setPad_height(double d);
+	void setPad_wire_height(double d);
 };
- 
-#endif // _SCENE_H_
+}
+#endif // _PROJECT_H_

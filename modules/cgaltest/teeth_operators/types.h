@@ -33,7 +33,7 @@
 #include <unordered_set>
 
 // OpenMP
-//#include <omp.h>
+#include <omp.h>
 
 namespace dentist {
 
@@ -103,6 +103,8 @@ typedef std::vector<IntList>                PolyList;
 typedef std::vector<Triangle>               TriangleList;
 typedef std::vector<bool>                   BoolList;
 typedef std::vector<Segment>                SegmentList;
+typedef std::vector<Vector>                 VectorList;
+
 
 // AABBTree
 typedef CGAL::AABB_face_graph_triangle_primitive<Polyhedron>           AABBPrimitive;
